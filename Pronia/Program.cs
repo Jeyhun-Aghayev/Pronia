@@ -14,6 +14,12 @@ namespace Pronia
             });
             var app = builder.Build();
 
+            
+                app.MapControllerRoute(
+                  name: "areas",
+                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+            
             app.MapControllerRoute(
                 name:"Defaut",
                 pattern:"{controller=home}/{action=index}/{id?}"
