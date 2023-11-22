@@ -8,6 +8,8 @@ namespace Pronia.Areas.Manage.Controllers
         public IActionResult Index()
         {
             return View();
+
         }
+      
     }
 }
