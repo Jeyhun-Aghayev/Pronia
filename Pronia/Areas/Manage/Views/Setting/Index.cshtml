@@ -1,0 +1,38 @@
+﻿﻿@using Pronia.Models;
+@model List<Setting>
+@{
+	int count = 0;
+}
+<div class="container">
+	<div class="d-flex" style="justify-content:space-between;align-items:center">
+		<h1>Products</h1>
+		<a class="btn btn-primary" asp-controller="Setting" asp-action="Create">Create</a>
+
+	</div>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">No#</th>
+			<th scope="col">İd</th>
+			<th scope="col">Key</th>
+			<th scope="col">Value</th>
+			<th scope="col"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			@foreach (var item in Model)
+			{
+				count++;
+				 <td>@count</td>
+				<td>@item.Id</td>
+				<td>@item.Key</td>
+				<td>@item.Value</td>
+				<td>
+					<a asp-action="Update" asp-route-id="@item.Id" class="btn btn-dark">Update</a>
+					<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+				</td>
+			}
+		</tr>
+	</tbody>
+</table>

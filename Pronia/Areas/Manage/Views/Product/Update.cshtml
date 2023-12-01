@@ -1,4 +1,4 @@
-﻿@model CreateProductVm
+﻿@model UpdateProductVm
 
 <div class="container">
     <form method="post" enctype="multipart/form-data">
@@ -33,6 +33,31 @@
                     <option selected>Open this select menu</option>
                 </select>
                 <span asp-validation-for="CategoryId" style="color:red"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md-3">
+                <label asp-for="MainImage" class="form-label">Main Image</label>
+                <img src="~/Upload/ProductImage/@Model.productİmages?.Where(p=>p.Isprime==true).FirstOrDefault().Url" />
+                <input asp-for="MainImage" class="form-control">
+                <span asp-validation-for="MainImage" style="color:red"></span>
+            </div>
+            <div class="mb-3 col-md-3">
+                <label asp-for="SecondImage" class="form-label">SecondImage</label>
+                <img src="~/Upload/ProductImage/@Model.productİmages?.Where(p=>p.Isprime==true).FirstOrDefault().Url" />
+                <input asp-for="SecondImage" class="form-control">
+                <span asp-validation-for="SecondImage" style="color:red"></span>
+            </div><div class="mb-3 col-md-3">
+                <label asp-for="DetailImages" class="form-label">Additional phodos</label>
+                @if (Model.DetailImages != null)
+                {
+                    @foreach (var item in Model.DetailImages)
+                    {
+                        <img src="~/Upload/ProductImage/@Model.productİmages?.Where(p=>p.Isprime==null).FirstOrDefault().Url" />
+                    }
+                }
+                <input asp-for="DetailImages" class="form-control">
+                <span asp-validation-for="DetailImages" style="color:red"></span>
             </div>
         </div>
 

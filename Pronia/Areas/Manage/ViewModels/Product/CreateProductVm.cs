@@ -8,5 +8,8 @@
         public double Price { get; set; }
         public int CategoryId { get; set; }
         public List<int>? TagId { get; set; }
+        public IFormFile MainImage { get; set; }
+        public IFormFile SecondImage { get; set; }
+        public List<IFormFile>? DetailImages { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 
 namespace Pronia.Areas.Manage.Controllers
 {
@@ -6,13 +7,16 @@ namespace Pronia.Areas.Manage.Controllers
     public class ProductController : Controller
     {
         AppDbContext _db;
-        public ProductController(AppDbContext db)
+        IWebHostEnvironment _environment;
+                public ProductController(AppDbContext db,IWebHostEnvironment environment)
         {
             _db = db;
+            _environment = environment;
         }
         public async Task<IActionResult> Index()
         {
             List<Product> products = await _db.Products.Include(p => p.Category)
+                .Include(p => p.ProductImages)
                  .Include(p => p.ProductTags).ThenInclude(p => p.Tag).ToListAsync();
             return View(products);
         }
@@ -36,6 +40,24 @@ namespace Pronia.Areas.Manage.Controllers
             {
                 ModelState.AddModelError("CategoryId", "Bele category movcuud deyil");
             }
+            if (vm.MainImage.CheckType("image/"))
+            {
+                ModelState.AddModelError("MainImage", "Yanliz sekil daxil ede bilersiz");
+                return View(vm);
+            }
+            if (vm.MainImage.CheckLength(3000))
+            {
+                ModelState.AddModelError("MainImage", "Max 3mb sekil ywkleye bilersiniz");
+            }
+            if (vm.MainImage.CheckType("image/"))
+            {
+                ModelState.AddModelError("SecondImage", "Yanliz sekil daxil ede bilersiz");
+                return View(vm);
+            }
+            if (vm.MainImage.CheckLength(3000))
+            {
+                ModelState.AddModelError("SecondImage", "Max 3mb sekil ywkleye bilersiniz");
+            }
             Product product = new Product()
             {
                 Name = vm.Name,
@@ -43,14 +65,49 @@ namespace Pronia.Areas.Manage.Controllers
                 Description = vm.Description,
                 SKU = vm.SKU,
                 CategoryId = vm.CategoryId,
+                ProductImages = new List<ProductImage>()
             };
+            foreach (var item in vm.DetailImages)
+            {
+                if (item.CheckType("image/"))
+                {
+                    TempData["Error"] += $"{item.Name} type duzgun deyil";
+                    continue;
+                }
+                if (item.CheckLength(3000))
+                {
+                    TempData["Error"] += $"{item.Name} 3mb-dan yxaridir";
+                    continue;
+                }
+                ProductImage productImage = new ProductImage()
+                {
+                    IsPrime = null,
+                    Url = item.Upload(_environment.WebRootPath,@"\Upload\ProductImage\"),
+                    Product = product
+                };
+                product.ProductImages.Add(productImage);
+            }
+                ProductImage pi = new ProductImage()
+            {
+                IsPrime = true,
+                Url = vm.MainImage.Upload(_environment.WebRootPath,@"\Upload\ProductImage\"),
+                Product = product
+            };
+            ProductImage pisecond = new ProductImage()
+            {
+                IsPrime = false,
+                Url = vm.MainImage.Upload(_environment.WebRootPath, @"\Upload\ProductImage\"),
+                Product = product
+            };
+            product.ProductImages.Add(pi);
+            product.ProductImages.Add(pisecond);          
             await _db.Products.AddAsync(product);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
         public async Task<IActionResult> Update(int id)
         {
-            Product product = await _db.Products.Where(p => p.Id == id).FirstOrDefaultAsync();
+            Product product = await _db.Products.Where(p => p.Id == id).Include(p=>p.ProductTags).ThenInclude(p=>p.Tag).Include(p=>p.ProductImages).FirstOrDefaultAsync();
             if (product == null)
             {
                 return View("Error");
@@ -76,7 +133,7 @@ namespace Pronia.Areas.Manage.Controllers
             {
                 return View("Error");
             }
-            Product product = await _db.Products.Where(p => p.Id == vm.Id).FirstOrDefaultAsync();
+            Product product = await _db.Products.Where(p => p.Id == vm.Id).Include(p => p.ProductTags).ThenInclude(p => p.Tag).Include(p => p.ProductImages).FirstOrDefaultAsync();
             if (product == null)
             {
                 return View("Error");

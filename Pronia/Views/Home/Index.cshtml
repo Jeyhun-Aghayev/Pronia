@@ -1263,7 +1263,7 @@
                                                  alt="Product Images" />
                                                     @if((@item.ProductImages.FirstOrDefault(p => p.IsPrime == false) != null)){
                                             <img class="secondary-img"
-                                                         src="~/assets/images/website-images//@item.ProductImages.Find(p=>p.IsPrime==true).Url"
+                                                         src="~/assets/images/website-images//@item.ProductImages.Find(p=>p.IsPrime==false).Url"
                                                     alt="Product Images" />
                                                     }
                                                 </a>

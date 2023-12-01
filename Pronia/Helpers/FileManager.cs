@@ -2,6 +2,15 @@
 {
     public static class FileManager
     {
+        public static bool CheckType(this IFormFile file, string type)
+        {
+            return file.ContentType.Contains(type);
+        }
+        public static bool CheckLength(this IFormFile file, int length)
+        {
+            return file.Length <= length * 1024;
+        }
+
         public static string Upload(this IFormFile file, string envPath, string folderName)
         {
             string filname = file.FileName;
