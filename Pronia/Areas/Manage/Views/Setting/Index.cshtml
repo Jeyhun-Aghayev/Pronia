@@ -1,5 +1,6 @@
 ﻿﻿@using Pronia.Models;
 @model List<Setting>
+<<<<<<< HEAD
 @{
 	int count = 0;
 }
@@ -14,6 +15,11 @@
 		<tr>
 			<th scope="col">No#</th>
 			<th scope="col">İd</th>
+=======
+<table class="table">
+	<thead>
+		<tr>
+>>>>>>> 96a64841f28dbec61ff07e9403351c3c7bed7599
 			<th scope="col">Key</th>
 			<th scope="col">Value</th>
 			<th scope="col"></th>
@@ -23,6 +29,7 @@
 		<tr>
 			@foreach (var item in Model)
 			{
+<<<<<<< HEAD
 				count++;
 				 <td>@count</td>
 				<td>@item.Id</td>
@@ -31,6 +38,14 @@
 				<td>
 					<a asp-action="Update" asp-route-id="@item.Id" class="btn btn-dark">Update</a>
 					<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+=======
+				//burda qaldiqqqq
+				@* <td></td> *@
+				@* <td></td> *@
+				<td>
+					<a asp-action="Update" asp-route-id="" class="btn btn-dark">Update</a>
+					<a asp-action="Delete" asp-route-id="" class="btn btn-danger">Delete</a>
+>>>>>>> 96a64841f28dbec61ff07e9403351c3c7bed7599
 				</td>
 			}
 		</tr>
