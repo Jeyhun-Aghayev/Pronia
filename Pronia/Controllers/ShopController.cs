@@ -12,6 +12,7 @@ namespace Pronia.Controllers
         public IActionResult Detail(int? id)
         {
             Product product  = _db.Products
+                .Where(p => p.IsDeleted == false)
                 .Include(p => p.ProductImages)
                 .Include(p => p.Category)
                 .Include(p => p.ProductTags)

@@ -15,7 +15,7 @@ namespace Pronia.Areas.Manage.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            List<Product> products = await _db.Products.Include(p => p.Category)
+            List<Product> products = await _db.Products.Where(p=>p.IsDeleted==false).Include(p => p.Category)
                 .Include(p => p.ProductImages)
                  .Include(p => p.ProductTags).ThenInclude(p => p.Tag).ToListAsync();
             return View(products);
@@ -107,7 +107,7 @@ namespace Pronia.Areas.Manage.Controllers
         }
         public async Task<IActionResult> Update(int id)
         {
-            Product product = await _db.Products.Where(p => p.Id == id).Include(p=>p.ProductTags).ThenInclude(p=>p.Tag).Include(p=>p.ProductImages).FirstOrDefaultAsync();
+            Product product = await _db.Products.Where(p => p.IsDeleted == false).Where(p => p.Id == id).Include(p=>p.ProductTags).ThenInclude(p=>p.Tag).Include(p=>p.ProductImages).FirstOrDefaultAsync();
             if (product == null)
             {
                 return View("Error");
@@ -133,7 +133,7 @@ namespace Pronia.Areas.Manage.Controllers
             {
                 return View("Error");
             }
-            Product product = await _db.Products.Where(p => p.Id == vm.Id).Include(p => p.ProductTags).ThenInclude(p => p.Tag).Include(p => p.ProductImages).FirstOrDefaultAsync();
+            Product product = await _db.Products.Where(p => p.IsDeleted == false).Where(p => p.Id == vm.Id).Include(p => p.ProductTags).ThenInclude(p => p.Tag).Include(p => p.ProductImages).FirstOrDefaultAsync();
             if (product == null)
             {
                 return View("Error");
@@ -151,14 +151,26 @@ namespace Pronia.Areas.Manage.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        public IActionResult Delete(int id)
+        public IActionResult DeleteSuperVisor(int id)
         {
-            var product = _db.Products.FirstOrDefault(p => p.Id == id);
+            var product = _db.Products.Where(p => p.IsDeleted == false).FirstOrDefault(p => p.Id == id);
             if (product == null)
             {
                 return View("Error");
             }
             _db.Products.Remove(product);
+            _db.SaveChanges();
+            return RedirectToAction("index");
+
+        }
+        public IActionResult Delete(int id)
+        {
+            var product = _db.Products.Where(p => p.IsDeleted == false).FirstOrDefault(p => p.Id == id);
+            if (product == null)
+            {
+                return View("Error");
+            }
+            product.IsDeleted = true;
             _db.SaveChanges();
             return RedirectToAction("index");
         }
