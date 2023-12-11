@@ -125,14 +125,28 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css
                                                     aria-expanded="false">
                                                 <i class="pe-7s-users"></i>
                                             </button>
-                                            <ul class="dropdown-menu"
-                                                aria-labelledby="settingButton">
-                                                <li>
-                                                    <a class="dropdown-item" href="my-account.html">My account</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item" href="login-register.html">Login | Register</a>
-                                                </li>
+                                            <ul class="dropdown-menu">
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+
+                                                            <li>
+                                                                <a class="dropdown-item">@User.Identity.Name</a>
+                                                            </li>
+                                                            <li>
+                                                                <a asp-action="LogOut"  asp-controller="Account"> </a>
+                                                                <a class="dropdown-item" asp-action="LogOut" asp-controller="Account">Log out</a>
+                                                            </li>
+                                            }
+                                            else
+                                            {
+                                                            <li>
+                                                                <a class="dropdown-item" asp-action="Login" asp-controller="Account" asp-route-ReturnUrl=@Context.Request.Path>Login</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" asp-action="Register" asp-controller="Account" >Register</a>
+                                                            </li>
+
+                                            }
                                             </ul>
                                         </li>
                                         <li class="d-none d-lg-block">

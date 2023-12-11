@@ -10,7 +10,7 @@ namespace Pronia.Controllers
 
         public CardController(AppDbContext db)
         {
-            _db = db
+            _db = db;
         }
 
         public IActionResult Index()

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Pronia.DAL;
 
 namespace Pronia
@@ -7,6 +8,16 @@ namespace Pronia
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric=true;
+                opt.Password.RequiredLength = 8;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(3);
+                opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._";
+                opt.Lockout.MaxFailedAccessAttempts = 3;
+            }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(opt =>
             {
@@ -14,8 +25,11 @@ namespace Pronia
             });
             var app = builder.Build();
 
-            
-                app.MapControllerRoute(
+            app.UseAuthorization();
+
+            app.UseAuthentication();
+
+            app.MapControllerRoute(
                   name: "areas",
                   pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
                 );

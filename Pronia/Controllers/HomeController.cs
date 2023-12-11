@@ -1,4 +1,6 @@
-﻿namespace Pronia.Controllers
+﻿using Pronia.ViewModels;
+
+namespace Pronia.Controllers
 {
     public class HomeController : Controller
     {
@@ -7,17 +9,12 @@
         {
             _db = db;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             HomeVM vm = new HomeVM()
             {
-                Sliders = _db.Sliders.ToList(),
-                Products = _db.Products
-                .Include(p => p.ProductImages)
-                .Include(p => p.Category)
-                .Include(p => p.ProductTags)
-                .ThenInclude(p => p.Tag)
-                .ToList()
+                Sliders = await _db.Sliders.ToListAsync(),
+                Products = await _db.Products.Where(p => p.IsDeleted == false).Include(p => p.ProductImages).ToListAsync()
             };
             return View(vm);
         }
